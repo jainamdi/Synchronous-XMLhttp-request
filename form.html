@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+    <head> </head> 
+    <body style="text-align: center; margin-top: 120px;font-size: 18px;">
+        <div>
+            <p style="margin-bottom: 12px;"><b>Enter URL for list of tallest buildings JSON File</b></p>
+            <form name="form1" action="#" onsubmit="func()">
+                <input type="text" name="jsonfile"><br>
+                <input style="margin-top: 15px;" type="submit" name="Submit Query" value="Submit Query">
+            </form>
+        </div>
+        <script type="text/javascript" src="blist.json"></script>
+        <script>
+        function func(){
+            var url = document.forms["form1"]["jsonfile"].value;
+            try{
+                if (url == ""){
+                alert("URL Cannot be empty");
+                return false;
+                //return false;
+            }
+            else{        
+                    xmlhttp=new XMLHttpRequest();
+                    xmlhttp.open("GET",url,false); // "synchronous” (deprecated because it freezes the page while waiting for a response) *
+                    xmlhttp.send();
+                    if (xmlhttp.status == 200){
+                        jsonObj= JSON.parse(xmlhttp.responseText);
+                    
+                        //alert("right file name");
+                        onloadl = generateHTML(jsonObj);
+                        //alert("function return successsfull");
+                        if(!onloadl){
+                            //alert("windows not ready");
+                            return false;
+                        }
+                        else{
+                            hWin = window.open("", "Assignment4", "height=850,width=1000");
+                            hWin.document.write(html_text); 
+                            hWin.document.close();
+                        }
+                    }
+                    else{
+                        alert("URL with such name does not exist");
+                        //alert("all error except 200 double else");
+                    }
+            }  
+            }                 
+            catch(exception){
+                if(exception.name=="NetworkError"){
+                    alert("URL with such name does not exist")
+                }
+                else{
+                    alert("JSON error");
+                }
+
+            }
+        }
+        function generateHTML(jsonObj){
+            //alert("startes html generation");
+            //console.log(jsonObj);
+            html_text="<html><head><title>Largest Manufacturers by Production (2017)</title></head><body>";
+            html_text+="<table border='2'>";
+            caption = jsonObj.Mainline.Table.Header.Data;
+            //console.log(caption);
+            //html_text+="<caption align='left'><h1>"+caption+"</h1></caption>";
+            html_text+="<tbody>"; 
+            html_text+="<tr>"; 
+            //var header_keys = Object.keys(captionNodeList);
+            for(i = 0 ; i < caption.length ; i++){
+                html_text+="<th>"+ caption[i] +"</th>";    
+            }
+            html_text+="</tr>"; 
+            cap = jsonObj.Mainline.Table.Row;
+//            html_text+="<p>" + cap + "</p>";
+            if (!cap || cap.length == 0){
+                alert("No building data found ");
+                return false;
+            }
+            else{
+                //alert("data present");
+                for (i = 0 ; i < cap.length ; i++){
+                    html_text+="<tr>";
+                    if(cap[i].Rank == undefined){
+                        alert("rank not defined");
+                        return false;
+                    }else{
+                        html_text+="<td>" + cap[i].Rank + "</td>";
+                    }
+                    if(cap[i].Name == undefined){
+                        alert("rank not defined");
+                        return false;
+                    }else{
+                        html_text+="<td>" + cap[i].Name + "</td>";
+                    }
+                    //for(j = 0 ; j < cap[i].Hubs.length ; i++){
+                    //    html_text+="<td>" + cap[i].hubs[j] + "</td>";
+                    //}
+                    if (cap[i].Hubs.Hub == undefined){
+                        alert("hub not defined");
+                        return false;
+                    } 
+                    else if(cap[i].Hubs.Hub.length == 0){
+                        html_text+="<td></td>";
+                    }
+                    else{
+                        html_text+="<td><ul>";
+                        for (j = 0 ; j < cap[i].Hubs.Hub.length ; j++){
+                            if(j == 0){
+                                html_text+="<li><b>" + cap[i].Hubs.Hub[j] + "</b></li>";                            
+                            }else{
+                                html_text+="<li>" + cap[i].Hubs.Hub[j] + "</li>";
+                            }
+                        }
+                    }
+                    html_text+="</ul></td>";
+                    if(cap[i].Height == undefined){
+                        alert("rank not defined");
+                        return false;
+                    }else{
+                        html_text+="<td>" + cap[i].Height + "</td>";
+                    }
+
+                    if(cap[i].HomePage == undefined){
+                        alert("rank not defined");
+                        return false;
+                    }else{
+                        html_text +="<td nowrap>" + '<a href="' + cap[i].HomePage + '">' + cap[i].HomePage + '</a></td>';
+                    }
+                    
+    //                html_text+="<td>" + "<a href='" + cap[i].HomePage + "'>" + "</a>" + "</td>";
+                    if(cap[i].HomePage == undefined){
+                        alert("rank not defined");
+                        return false;
+                    }else{
+                        html_text+="<td>" + '<image style="height:200px; width:200px;text-align:center;"' + 'src="' + cap[i].Logo + '">' + "</td>";
+                    }
+                    html_text+="</tr>";
+                }
+
+            }
+            html_text+="</tbody>"; 
+            html_text+="</table>";           
+            html_text+= "</body></html>";  
+            return true;
+        }
+        </script>
+    </body>
+
+</html>
+
+
+<!--
+//                    if (JSON.stringify(response.jsonObj) == '{}'){   
+ /*                   }
+                    else{
+                        return jsonObj
+                    }
+//                    return jsonObj;   
+                    jsonObj = loadJSON(URL);
+                    jsonObj.onload=generateHTML(jsonObj);
+                    hWin = window.open("", "Assignment4", "height=800,width=600");
+                    hWin.document.write(html_text); 
+                    hWin.document.close();*/ 
+//console.log(cap);
+//html_text+= "<tr>";
+//for(i = 0 ; i < cap.length ; i++){
+//    html_text+="<td>" + cap[i] + "</td>";
+//}
+//html_text+="<td>" + "</td>";
+//html_text+="</tr>";
+
+/*        function generateHTML(jsonObj){
+root = jsonObj.DocumentElement; 
+html_text="<html><head><title>JSON Parse Result</title></head><body>";
+html_text+="<table border='2'>"; 
+caption = jsonObj.Mainline.Table.Header.Data;
+console.log(caption);
+html_text += "<Mainline align = 'left'><h1>"+caption+"</h1></Mainline>";
+for(i = 0 ; i < caption.length; i++){
+
+}
+caption=jsonObj.catalog.title; 
+html_text+="<caption align='left'><h1>"+caption+"</h1></caption>";
+planes=jsonObj.catalog.aircraft; // an array of planes
+planeNodeList=planes[0];
+html_text+="<tbody>"; 
+html_text+="<tr>"; 
+x=0;  y=0;
+// output the headers
+var header_keys = Object.keys(planeNodeList);
+for(i=0;i<header_keys.length;i++){ 
+    header=header_keys[i];
+    if(header=="Airbus") {  header="Family";  x=120;  y=55;  }				   	
+    if(header=="Boeing") {  header="Family";  x=100;  y=67;  }
+    if(header=="seats")    header="Seats"; 
+    if(header=="Wingspan")   header="Wing Span"; 				 
+    if(header=="height")  header="Height";			       
+    html_text+="<th>"+header+"</th>";    			
+}    
+for (i = 0 ; i < )*/
+//}
+-->
